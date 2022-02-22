@@ -1,7 +1,7 @@
 ### This is an example of Fybrik read module that uses REST protocol to connect to a FHIR server to obtain medical records.  Policies redact the information returned by the FHIR server or can even restrict access to a given resource type.
 # User authentication is enabled, as well as (optional) logging to Kafka
 
-#### Concepts
+### Concepts
 1. The FHIR server itself is the Fybrik data source and described by a Fybrik Asset.
 2. The "columns" in the asset.yaml represent the schema for a FHIR resource.   The name of the column can either an
 attribute which will be applied to all FHIR resources (e.g. "id"), or this can be made more specific by specifying
