@@ -31,9 +31,9 @@ spec:
             protocol: fhir
             dataformat: json
   chart:
-    name: ghcr.io/elsalant/sql-to-fhir-chart:0.0.6
+    name: ghcr.io/fybrik/fhir-read-chart:0.0.1
     values:
-      image.tag: v4
+      image.tag: 0.0.1
   statusIndicators:
     - kind: StreamTransfer
       successCondition: status.status == SUCCEEDED

@@ -9,6 +9,7 @@ curlify==2.2.1
 Flask==1.1.2
 Flask-RESTful==0.3.8
 idna==3.2
+itsdangerous==2.0.1
 jmespath==0.10.0
 kafka-python==2.0.2
 kubernetes==19.15.0

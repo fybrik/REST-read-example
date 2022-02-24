@@ -15,11 +15,11 @@ Do once:  make sure helm v3.7+ is installed
 
 1. export HELM_EXPERIMENTAL_OCI=1
 2. Install fybrik from the instructions in: https://fybrik.io/v0.6/get-started/quickstart/
-3. Start the IBM FHIR server service (out-of-box version):
+3. Start the IBM FHIR server service (out-of-box version):   
 helm install ibmfhir oci://ghcr.io/elsalant/ibmfhir_orig --version=0.2.0 -n fybrik-system
 4. Start the Kafka server:  
    - helm install kafka bitnami/kafka -n fybrik-system  
-5. Create a namespace for the sqlfhir demo:  
+5. Create a namespace for the demo:  
 kubectl create namespace rest-fhir
 6. Pull the files:
 git pull https://github.com/fybrik/REST-read-example.git

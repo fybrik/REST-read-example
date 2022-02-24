@@ -2,19 +2,19 @@ export DOCKER_USERNAME ?= fybrik
 export DOCKER_PASSWORD ?= 
 export DOCKER_HOSTNAME ?= ghcr.io
 export DOCKER_NAMESPACE ?= fybrik
-export DOCKER_TAGNAME ?= 0.0.2
+export DOCKER_TAGNAME ?= 0.0.1
 
-DOCKER_IMG_NAME ?= rest-read-module
+DOCKER_IMG_NAME ?= fhir-read-chart
 DOCKER_FILE ?= ./python/Dockerfile
 APP_IMG ?=  ${DOCKER_HOSTNAME}/${DOCKER_NAMESPACE}/${DOCKER_IMG_NAME}:${DOCKER_TAGNAME}
 DOCKER_IMG_CONTEXT ?= .
 
-CHART_NAME ?= ${DOCKER_IMG_NAME}
-HELM_CHART_NAME ?= rest_dashboard_chart
+CHART_NAME ?= charts/${DOCKER_IMG_NAME}
+HELM_CHART_NAME ?= fhir-read-chart
 CHART_REGISTRY_PATH := oci://${DOCKER_HOSTNAME}/${DOCKER_NAMESPACE}
 
 HELM_RELEASE ?= rel1-${DOCKER_IMG_NAME}
-HELM_TAG ?= 0.1.0
+HELM_TAG ?= 0.0.1
 HELM_VALUES ?= \
 	--set hello=world1
 
@@ -78,4 +78,3 @@ helm-actions:
 
 .PHONY: helm-all
 helm-all: helm-verify helm-chart-push helm-chart-pull helm-uninstall helm-chart-install
-
