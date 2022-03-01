@@ -200,10 +200,7 @@ def apply_policy(jsonList, policies):
    # cleanPatientId = df['subject.reference'][0].replace('/', '-')
     print('inside apply_policy. Length policies = ', str(len(policies)), " type(policies) = ", str(type(policies)))
 #    for policy in policies:
-    if TEST:
-        policy = dict(policies['dict_item'])
-    else:
-        policy = policies
+    policy = policies
     print('policy = ', str(policy))
     if policy['transformations'][0] == None:
         print('No transformations found!')
@@ -342,7 +339,10 @@ def getAll(queryString=None):
             surName = decryptJWT(payloadEncrypted, 'Surname')
         except:
             print("Error extracting Surname and/or GivenName")
-        organization = decryptJWT(payloadEncrypted, organizationKey)
+        try:
+            organization = decryptJWT(payloadEncrypted, organizationKey)
+        except:
+            print("No organization JWT")
     if (noJWT):
         print("No JWT passed!")
         role = request.headers.get('role')  # testing only
@@ -356,7 +356,7 @@ def getAll(queryString=None):
     timeOut = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     # Hack for testing without JWT
     queryRequester = role if noJWT else givenName+surName
-    assetID = dict(cmDict['dict_item'])['assetID'] if TEST else cmDict['assetID']
+    assetID = cmDict['assetID']
     intent = 'Not given'
     for i in cmDict['transformations']:
         if 'intent' in i:
@@ -373,7 +373,7 @@ def getAll(queryString=None):
     jSONout = '{\"Timestamp\" : \"' + timeOut + '\", \"Requester\": \"' + requester + '\", \"Query\": \"' + queryString + '\",' + \
             '\"ClientIP\": \"' + str(request.remote_addr) + '\",' + \
               '\"assetID": \"' + assetID + '\",' + \
-              '\"intent\": \"' + intent +'\",\"Outcome": \"UNAUTHORIZED\"}'
+              '\"intent\": \"' + intent +'\",\"Outcome": \"AUTHORIZED\"}'
     logToKafka(jSONout,kafka_topic)
 
     # Go out to the actual FHIR server
@@ -428,6 +428,7 @@ def main():
             'columns': ['valueQuantity.value', 'id'], 'options': {'redactValue': 'XXXXX'}},
             {'action': 'ReturnIntent', 'description': 'return intent',
             'columns': ['N/A'], 'intent': 'research'}]), ('assetID', 'sql-fhir/observation-json')]}
+        cmDict = dict(cmDict['dict_item'])
    #     cmDict = {'dict_item': [('transformations', [{'action': 'RedactColumn', 'description': 'redact columns: [valueQuantity.value id]',
    #          'columns': ['valueQuantity.value', 'id'], 'options': {'redactValue': 'XXXXX'}}]), ('assetID', 'sql-fhir/observation-json')]}
    #     cmDict = {'dict_item': [('transformations', [{'action': 'RedactColumn', 'description': 'redacting columns: Patient', 'columns': ['Patient'], 'options': {'redactValue': 'XXXXX'}}])]}
