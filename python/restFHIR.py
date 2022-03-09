@@ -366,6 +366,7 @@ def getAll(queryString=None):
         jSONout = '{\"Timestamp\" : \"' + timeOut + '\", \"Requester\": \"' + queryRequester + '\", \"Query\": \"' + queryString + \
                     '\", \"ClientIP\": \"' + str(request.remote_addr) + '\",' + \
                   '\"assetID": \"' + assetID + '\",' + \
+                  '\"policyDecision\": ' + str(cmDict['transformations']) + '\",' + \
                   '\", \"intent\": \"' + intent +'\", \"Outcome": \"UNAUTHORIZED\"}'
         logToKafka(jSONout, kafka_topic)
         return ("{\"Error\": \"User authentication fails!\"}")
@@ -373,6 +374,7 @@ def getAll(queryString=None):
     jSONout = '{\"Timestamp\" : \"' + timeOut + '\", \"Requester\": \"' + requester + '\", \"Query\": \"' + queryString + '\",' + \
             '\"ClientIP\": \"' + str(request.remote_addr) + '\",' + \
               '\"assetID": \"' + assetID + '\",' + \
+              '\"policyDecision\": ' + str(cmDict['transformations']) + '\",' + \
               '\"intent\": \"' + intent +'\",\"Outcome": \"AUTHORIZED\"}'
     logToKafka(jSONout,kafka_topic)
 
