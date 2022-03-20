@@ -25,3 +25,6 @@ spec:
         tags:
           PII: true
           blocked: false
+      - name: Patient
+        tags:
+          blocked: true

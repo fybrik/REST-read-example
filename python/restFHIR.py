@@ -259,11 +259,11 @@ def apply_policy(jsonList, policies):
     if action == 'BlockResource':
     #    if policy['transformations'][0]['columns'][0] == df['resourceType'][0]:
         if df['resourceType'][0] in policy['transformations'][0]['columns']:
-            return('{"result": "Resource blocked by policy!!"}')
+            return('{"result": "Resource blocked by policy!!"}', VALID_RETURN)
         else:
             print('Error in BlockResourced. resourceType =  ' + df['resourceType'][0] + \
                   ' policy[\'transformations\'][0][\'columns\'][0] = ' + df['resourceType'][0] in policy['transformations'][0]['columns'][0])
-            return((str(df.to_json())))
+            return(str(df.to_json()), ERROR_CODE)
 
     if action == 'Statistics':
         for col in policy['transformations'][0]['columns']:
@@ -300,8 +300,8 @@ def apply_policy(jsonList, policies):
             'CGM_MEAN': mean,
             'CGM_STD': std
         }
-        return(d)
-    return('{"Unknown transformation": "'+ action + '"}')
+        return(str(d), VALID_RETURN)
+    return('{"Unknown transformation": "'+ action + '"}', ERROR_CODE)
 
 def timeWindow_filter(df):
     print("keys = ", df.keys())
@@ -350,7 +350,7 @@ def getAll(queryString=None):
         role = 'ERROR NO ROLE!'
     if (organization == None):
         organization = 'NO ORGANIZATION'
-    print('Surname = ' + surName + ' GivenName = ' + givenName + 'role = ', role, " organization = ", organization)
+    print('Surname = ' + surName + ' GivenName = ' + givenName + ' role = ', role, " organization = ", organization)
 #   Role in JWT needs to match role of requestor from original FybrikApplication deployment
     requester = checkRequester()  # from the FybrikApplication
     timeOut = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
