@@ -25,9 +25,10 @@ FLASK_PORT_NUM = 5559  # this application
 
 ACCESS_DENIED_CODE = 403
 ERROR_CODE = 406
+BLOCK_CODE = 501
 VALID_RETURN = 200
 
-TEST = False   # allows testing outside of Fybrik/Kubernetes environment
+TEST = True   # allows testing outside of Fybrik/Kubernetes environment
 
 if TEST:
     DEFAULT_FHIR_HOST = 'https://localhost:9443/fhir-server/api/v4/'
@@ -263,7 +264,7 @@ def apply_policy(jsonList, policies):
         else:
             print('Error in BlockResourced. resourceType =  ' + df['resourceType'][0] + \
                   ' policy[\'transformations\'][0][\'columns\'][0] = ' + df['resourceType'][0] in policy['transformations'][0]['columns'][0])
-            return(str(df.to_json()), ERROR_CODE)
+            return(str(df.to_json()), BLOCK_CODE)
 
     if action == 'Statistics':
         for col in policy['transformations'][0]['columns']:
@@ -369,14 +370,7 @@ def getAll(queryString=None):
                   '\"policyDecision\": ' + str(cmDict['transformations']) + '\",' + \
                   '\", \"intent\": \"' + intent +'\", \"Outcome": \"UNAUTHORIZED\"}'
         logToKafka(jSONout, kafka_topic)
-        return ("{\"Error\": \"User authentication fails!\"}")
-    # Log the query request
-    jSONout = '{\"Timestamp\" : \"' + timeOut + '\", \"Requester\": \"' + requester + '\", \"Query\": \"' + queryString + '\",' + \
-            '\"ClientIP\": \"' + str(request.remote_addr) + '\",' + \
-              '\"assetID": \"' + assetID + '\",' + \
-              '\"policyDecision\": ' + str(cmDict['transformations']) + '\",' + \
-              '\"intent\": \"' + intent +'\",\"Outcome": \"AUTHORIZED\"}'
-    logToKafka(jSONout,kafka_topic)
+        return ("{\"Error\": \"Unauthorized access attempt!\"}")
 
     # Go out to the actual FHIR server
     print("request.method = " + request.method)
@@ -385,6 +379,19 @@ def getAll(queryString=None):
         return ("{\"Error\": \"No information returned!\"}")
 #apply_policies
     ans, messageCode = apply_policy(dfBack, cmDict)
+    if messageCode == VALID_RETURN:
+        outcome = "AUTHORIZED"
+    elif messageCode == BLOCK_CODE:
+        outcome = "RESTRICTED"
+    else:
+        outcome = "ERROR"
+    # Log the query request
+    jSONout = '{\"Timestamp\" : \"' + timeOut + '\", \"Requester\": \"' + requester + '\", \"Query\": \"' + queryString + '\",' + \
+              '\"ClientIP\": \"' + str(request.remote_addr) + '\",' + \
+              '\"assetID": \"' + assetID + '\",' + \
+              '\"policyDecision\": ' + str(cmDict['transformations']) + '\",' + \
+              '\"intent\": \"' + intent + '\",\"Outcome": \"' + outcome + '\"}'
+    logToKafka(jSONout, kafka_topic)
     return (json.dumps(ans))
 
 def logToKafka(jString, kafka_topic):
@@ -426,7 +433,7 @@ def main():
         print('cmReturn = ', cmReturn)
     if TEST:
         cmDict = {'dict_item': [
-            ('transformations', [{'action': 'RedactColumn', 'description': 'redact columns: [valueQuantity.value id]',
+            ('transformations', [{'action': 'BlockResource', 'description': 'redact columns: [valueQuantity.value id]',
             'columns': ['valueQuantity.value', 'id'], 'options': {'redactValue': 'XXXXX'}},
             {'action': 'ReturnIntent', 'description': 'return intent',
             'columns': ['N/A'], 'intent': 'research'}]), ('assetID', 'sql-fhir/observation-json')]}
