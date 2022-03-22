@@ -208,7 +208,7 @@ def apply_policy(jsonList, policies):
         return (str(df.to_json()))
     action = policy['transformations'][0]['action']
     if action == '':
-        return (str(df.to_json()))
+        return (str(df.to_json()), VALID_RETURN)
     print('Action = ' + action)
 
 # Allow specifying a particular attribute for a given resource by specifying the in policy file the
@@ -260,11 +260,11 @@ def apply_policy(jsonList, policies):
     if action == 'BlockResource':
     #    if policy['transformations'][0]['columns'][0] == df['resourceType'][0]:
         if df['resourceType'][0] in policy['transformations'][0]['columns']:
-            return('{"result": "Resource blocked by policy!!"}', VALID_RETURN)
+            return('{"result": "Resource blocked by policy!!"}', BLOCK_CODE)
         else:
-            print('Error in BlockResourced. resourceType =  ' + df['resourceType'][0] + \
+            print('No resource to block!. resourceType =  ' + df['resourceType'][0] + \
                   ' policy[\'transformations\'][0][\'columns\'][0] = ' + df['resourceType'][0] in policy['transformations'][0]['columns'][0])
-            return(str(df.to_json()), BLOCK_CODE)
+            return(str(df.to_json()), VALID_RETURN)
 
     if action == 'Statistics':
         for col in policy['transformations'][0]['columns']:
