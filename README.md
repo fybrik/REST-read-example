@@ -26,24 +26,24 @@ Then, expose port 9094 on the Kubernetes cluster with the command:
 kubectl port-forward service/kafka-0-external  9094:9094  
 5. Create a namespace for the demo:  
 kubectl create namespace rest-fhir
-6. Pull the files:
-git pull https://github.com/fybrik/REST-read-example.git
+6. Pull the files:  
+git pull https://github.com/fybrik/REST-read-example.git  
 7. Install the policy:  
 \<ROOT>/scripts/applyPolicy.sh
 8. Apply the FHIR server secrets and permissions  
 \<ROOT>/scripts/deployPermissions.sh 
-9. kubectl apply -f \<ROOT>/asset.yaml
+9. kubectl apply -f \<ROOT>/asset.yaml. 
 10. Apply the module
 kubectl apply -f \<ROOT>/restFHIRmodule.yaml  
-11. Apply the application - note that the name (or JWT) for the requester is in the label.requestedBy field!
-kubectl apply -f \<ROOT>/restFHIRapplication.yaml
-12. Test
+11. Apply the application - note that the name (or JWT) for the requester is in the label.requestedBy field!  
+kubectl apply -f \<ROOT>/restFHIRapplication.yaml  
+12. Test  
 - a) Load database  
 kubectl port-forward svc/ibmfhir -n fybrik-system 9443:9443  
-\<ROOT>/scripts/createPatient.sh
+\<ROOT>/scripts/createPatient.sh  
 - b) Port-forward pod in fybrik-blueprints  
  kubectl get pods -n fybrik-blueprints  
-eg: kubectl port-forward pod/\<POD ID> -n fybrik-blueprints 5559:5559
+eg: kubectl port-forward pod/\<POD ID> -n fybrik-blueprints 5559:5559  
 - c) curl -X GET -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJIRUlSIHRlc3QiLCJpYXQiOjE2NDM2MTQ3NzQsImV4cCI6MTczODMwOTIwNCwiYXVkIjoiTk9LTFVTIiwic3ViIjoiaGVpci13cDItdGVzdCIsIkdpdmVuTmFtZSI6IkVsaW90IiwiU3VybmFtZSI6IlNhbGFudCIsIkVtYWlsIjoic2FsYW50QGlsLmlibS5jb20iLCJSb2xlIjpbIk1hbmFnZXIiLCJQcm9qZWN0IEFkbWluaXN0cmF0b3IiXX0.WxBSdu7xe9LIsu_MlzX3spmvQmQpRm8MFK0d19eW_no" http://localhost:5559/Patient
 - To load Observations:  
   docker run --network host ghcr.io/elsalant/observation-generator:v1
