@@ -23,7 +23,7 @@ helm install ibmfhir oci://ghcr.io/elsalant/ibmfhir_orig --version=0.2.0 -n fybr
 helm install kafka bitnami/kafka --set externalAccess.enabled=true --set externalAccess.autoDiscovery.enabled=true --set externalAccess.service.type=NodePort --set rbac.create=true
  
 Then, expose port 9094 on the Kubernetes cluster with the command:
-kubectl port-forward service/kafka-0-external  9094:9094
+kubectl port-forward service/kafka-0-external  9094:9094  
 5. Create a namespace for the demo:  
 kubectl create namespace rest-fhir
 6. Pull the files:
