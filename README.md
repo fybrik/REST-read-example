@@ -31,7 +31,7 @@ git pull https://github.com/fybrik/REST-read-example.git
 7. Install the policy:  
 \<ROOT>/scripts/applyPolicy.sh  
 8. Apply the FHIR server secrets and permissions  
-\<ROOT>/scripts/deployPermissions.sh 
+\<ROOT>/scripts/deployPermissions.sh  
 9. kubectl apply -f \<ROOT>/asset.yaml  
 10. Apply the module  
 kubectl apply -f \<ROOT>/restFHIRmodule.yaml  
